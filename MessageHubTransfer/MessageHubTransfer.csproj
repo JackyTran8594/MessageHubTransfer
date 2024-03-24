@@ -7,13 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNet.SignalR.Core" Version="2.4.3" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client.Core" Version="7.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="7.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.0.15" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Workerservice\" />
   </ItemGroup>
 
 </Project>

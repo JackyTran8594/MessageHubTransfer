@@ -1,4 +1,6 @@
 ﻿using MessageHubTransfer.Hubs;
+using MessageHubTransfer.Workerservice;
+
 
 namespace MessageHubTransfer
 {
@@ -18,9 +20,14 @@ namespace MessageHubTransfer
             services.AddSignalR(hubOptions =>
             {
                 hubOptions.EnableDetailedErrors = true;
+                
             });
 
-            //services.AddHostedService<MessageBrokerHub>();
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
+            services.AddHostedService<WorkerService>();
+            services.AddControllers();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,17 +46,23 @@ namespace MessageHubTransfer
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+          
 
             app.UseRouting();
 
             app.UseAuthorization();
 
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
-                endpoints.MapHub<MessageBrokerHub>("/messagebroker");
-                endpoints.MapHub<MessageBrokerHub>("/time-server");
+                endpoints.MapHub<MessageBrokerHub>("/messageBroker");
+                endpoints.MapHub<ServerDataHub>("/serverData");
+                endpoints.MapControllers();
             });
+
+  
         }
 
     }

@@ -1,4 +1,10 @@
-﻿namespace MessageHubTransfer.Model
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleAppAdmin
 {
     public class MessageEvent
     {
@@ -23,6 +29,12 @@
             this.key = key;
             this.payload = payload;
             this.deviceId = deviceId;
+        }
+
+        public MessageEvent(string ipAddress, string payload)
+        {
+            this.ipAddress = ipAddress;
+            this.payload = payload;
         }
     }
 }

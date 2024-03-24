@@ -1,26 +1,29 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using MessageHubTransfer.Model;
+
+using Microsoft.AspNetCore.SignalR;
+
 
 namespace MessageHubTransfer.Hubs
 {
-    public class MessageBrokerHub: Hub
+    
+    public sealed class MessageBrokerHub:Hub
     {
+
+
         public async Task sendMessage(string user, string message)
         {
-            //return Clients.All.SendAsync(user, message);
             await Clients.All.SendAsync(user, message);
 
         }
 
         public async Task senMessageToCaller(string user, string message)
         {
-            //return Clients.Caller.SendAsync(user, message);
             await Clients.Caller.SendAsync(user, message);
 
         }
 
         public async Task SendMessageToGroup(string user, string message)
         {
-            //return Clients.Group("SignalR Users").SendAsync("ReceiveMessage", user, message);
             await Clients.Group("SignalR Users").SendAsync("ReceiveMessage", user, message);
 
         }
@@ -30,7 +33,6 @@ namespace MessageHubTransfer.Hubs
         [HubMethodName("SendMessageToUser")]
         public async Task DirectMessage(string user, string message)
         {
-            //return Clients.User(user).SendAsync("ReceiveMessage", user, message);
             await Clients.User(user).SendAsync("ReceiveMessage", user, message);
 
         }
@@ -46,18 +48,27 @@ namespace MessageHubTransfer.Hubs
         // <OnConnectedAsync>
         public override async Task OnConnectedAsync()
         {
+            Console.WriteLine("======= log message connect to MessageBrokerHub successful ======");
             await Groups.AddToGroupAsync(Context.ConnectionId, "SignalR Users");
-            await base.OnConnectedAsync();
+            await base.OnConnectedAsync(); 
         }
         // </OnConnectedAsync>
 
         // <OnDisconnectedAsync>
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            await Clients.Group("SignalR Users").SendAsync("ReceiveMessage", "I", "disconnect");
-            await base.OnDisconnectedAsync(exception);
+            await Groups.AddToGroupAsync(Context.ConnectionId, "SignalR Users");
+            await base.OnConnectedAsync();
         }
         // </OnDisconnectedAsync>
+
+        [HubMethodName("clientMessage")]
+        public async Task receviedMessageFromClient(MessageEvent message)
+        {
+            await Clients.All.SendAsync("serverMessage", message);
+            Console.WriteLine("======= log message ======" + message.ToString());
+        }
+
 
 
     }
