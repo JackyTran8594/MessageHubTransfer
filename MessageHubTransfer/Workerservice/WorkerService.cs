@@ -8,24 +8,25 @@ namespace MessageHubTransfer.Workerservice
     {
         private readonly ILogger<WorkerService> _logger;
 
-        private HubConnection _hubConnection;
+        //private HubConnection _hubConnection;
+        private readonly IHubContext<ClockServerHub, IClock> _clockHub;
 
-        public WorkerService(ILogger<WorkerService> logger)
+        public WorkerService(ILogger<WorkerService> logger, IHubContext<ClockServerHub, IClock> clockHub)
         {
             _logger = logger;
-            _hubConnection = new HubConnectionBuilder().WithUrl("https://localhost:7138/serverData").WithAutomaticReconnect().Build();
-            _hubConnection.StartAsync();
+            _clockHub = clockHub;
 
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation("======== ExecuteAsync broadCast data =======");
             while (!stoppingToken.IsCancellationRequested)
             {
-
-                _logger.LogInformation("Worker running at: {time}", DateTime.Now);
-                //await _hubContext.Clients.All.SendAsync("getTimeServer", serverTime);
-                await _hubConnection.SendAsync("sendCurrentTimeToClient", "trigger");
+                _logger.LogInformation("Worker running at: {Time}", DateTime.Now);
+                await _clockHub.Clients.All.broadCastTimeServer(DateTime.Now);
+                await Task.Delay(1000);
             }
         }
+
     }
 }

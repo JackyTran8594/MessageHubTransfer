@@ -18,11 +18,14 @@ namespace ClientDesktopApp
         private HubConnection hubConnection;
         private HubConnection serverHubConnection;
         private static string apiUrl = "https://localhost:7138/api/v1/serverInfomation";
+        //private static string apiUrl = "http://192.168.1.11:5113/api/v1/serverInfomation";
+
         private HttpClient httpClient;
         public ClientApp()
         {
             InitializeComponent();
 
+            //hubConnection = new HubConnectionBuilder().WithUrl("http://192.168.1.11:5113/messageBroker").WithAutomaticReconnect().Build();
             hubConnection = new HubConnectionBuilder().WithUrl("https://localhost:7138/messageBroker").WithAutomaticReconnect().Build();
             hubConnection.StartAsync();
             connectToServerHub();
@@ -48,7 +51,10 @@ namespace ClientDesktopApp
 
         private void connectToServerHub()
         {
-            serverHubConnection = new HubConnectionBuilder().WithUrl("https://localhost:7138/serverData").WithAutomaticReconnect().Build();
+            serverHubConnection = new HubConnectionBuilder().WithUrl("https://localhost:7138/clockData").WithAutomaticReconnect().Build();
+            //serverHubConnection = new HubConnectionBuilder().WithUrl("http://192.168.1.11:5113/clockData").WithAutomaticReconnect().Build();
+
+
             serverHubConnection.StartAsync();
         }
 
@@ -58,7 +64,7 @@ namespace ClientDesktopApp
             {
                 
 
-                serverHubConnection.On<DateTime>("getTimeServer", time =>
+                serverHubConnection.On<DateTime>("broadCastTimeServer", time =>
                 {
                     Invoke(new Action(() =>
                     {

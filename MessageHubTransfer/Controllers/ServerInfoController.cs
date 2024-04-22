@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MessageHubTransfer.Hubs;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,10 +9,19 @@ namespace MessageHubTransfer.Controllers
     [ApiController]
     public class ServerInfoController : ControllerBase
     {
+
+        private readonly ILogger<MessageBrokerHub> _logger;
+
+        public ServerInfoController(ILogger<MessageBrokerHub> logger)
+        {
+            _logger = logger;
+        }
+
         // GET: api/v1/serverInfo
         [HttpGet]
         public IEnumerable<string> Get()
         {
+            _logger.LogInformation("===== serverInfo ======" + DateTime.Now);
             return new string[] { "value1", "value2" };
         }
 

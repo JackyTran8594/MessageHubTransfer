@@ -25,6 +25,8 @@ namespace ClientAdminApp
         private void buildConnection()
         {
             hubConnection = new HubConnectionBuilder().WithUrl("https://localhost:7138/messageBroker").Build();
+            //hubConnection = new HubConnectionBuilder().WithUrl("http://192.168.1.11:5113/messageBroker").Build();
+
             hubConnection.StartAsync();
         }
 
@@ -59,10 +61,12 @@ namespace ClientAdminApp
             try
             {
 
-                serverHubConnection = new HubConnectionBuilder().WithUrl("https://localhost:7138/serverData").WithAutomaticReconnect().Build();
+                serverHubConnection = new HubConnectionBuilder().WithUrl("https://localhost:7138/clockData").WithAutomaticReconnect().Build();
+                //serverHubConnection = new HubConnectionBuilder().WithUrl("http://192.168.1.11:5113/clockData").WithAutomaticReconnect().Build();
+
                 serverHubConnection.StartAsync();
 
-                serverHubConnection.On<DateTime>("getTimeServer", time =>
+                serverHubConnection.On<DateTime>("broadCastTimeServer", time =>
                 {
                     Invoke(new Action(() =>
                     {

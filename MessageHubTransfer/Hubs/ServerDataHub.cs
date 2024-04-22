@@ -5,6 +5,12 @@ namespace MessageHubTransfer.Hubs
 {
     public class ServerDataHub: Hub
     {
+        private readonly ILogger<ServerDataHub> _logger;
+
+        public ServerDataHub(ILogger<ServerDataHub> logger)
+        {
+            _logger = logger;
+        }
 
         // <ThrowHubException>
         public Task ThrowException()
@@ -19,6 +25,7 @@ namespace MessageHubTransfer.Hubs
             Console.WriteLine("======= log message connect to serverDataHub successful ======");
             await Groups.AddToGroupAsync(Context.ConnectionId, "SignalR Users");
             await base.OnConnectedAsync();
+            _logger.LogInformation("======== Connection Successfully ======= ");
             //_ = sendServerTimeToAllClient();  
         }
         // </OnConnectedAsync>
@@ -37,13 +44,14 @@ namespace MessageHubTransfer.Hubs
             DateTime serverTime = DateTime.Now;
             await Clients.All.SendAsync("getTimeServer", serverTime);
             Console.WriteLine("======= log message ======" + serverTime);
+            _logger.LogInformation("======== sendCurrentTimeToClient ======= :" + serverTime);
         }
 
         [HubMethodName("sendNotifyStorage")]
         public async Task sendNotifyStorage(string trigger)
         {
             DateTime serverTime = DateTime.Now;
-            await Clients.All.SendAsync("getTimeServer", serverTime);
+            //await Clients.All.SendAsync("getTimeServer", serverTime);
             Console.WriteLine("======= log message ======" + serverTime);
         }
 

@@ -8,7 +8,12 @@ namespace MessageHubTransfer.Hubs
     
     public sealed class MessageBrokerHub:Hub
     {
+        private readonly ILogger<MessageBrokerHub> _logger;
 
+        public MessageBrokerHub(ILogger<MessageBrokerHub> logger)
+        {
+            _logger = logger;
+        }
 
         public async Task sendMessage(string user, string message)
         {
@@ -67,6 +72,8 @@ namespace MessageHubTransfer.Hubs
         {
             await Clients.All.SendAsync("serverMessage", message);
             Console.WriteLine("======= log message ======" + message.ToString());
+            _logger.LogInformation("======== clientMessage ======= " + message.ToString());
+
         }
 
 
